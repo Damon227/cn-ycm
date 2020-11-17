@@ -25,6 +25,7 @@ public class DbConfig {
 
     @Value("${spring.datasource.driver-class-name}")
     private String driverClassName;
+
     @Value("${spring.datasource.url}")
     private String url;
 
@@ -43,7 +44,6 @@ public class DbConfig {
         dataSource.setPassword(this.password);
         dataSource.setConnectionTestQuery("SELECT 1");
         return dataSource;
-
     }
 
     @Bean(name = "transactionManager")
