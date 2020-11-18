@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Trigger List</title>
+</head>
+<body>
+    <table>
+        <tr>
+            <th>Sched Name</th>
+            <th>Trigger Name</th>
+            <th>Trigger Group</th>
+            <th>Cron Expression</th>
+            <th>Time Zone ID</th>
+        </tr>
+        <tr th:each="trigger:${cronTriggers}">
+            <td th:text="${trigger.schedName}"></td>
+            <td th:text="${trigger.triggerName}"></td>
+            <td th:text="${trigger.triggerGroup}"></td>
+            <td th:text="${trigger.cronExpression}"></td>
+            <td th:text="${trigger.timeZoneId}"></td>
+        </tr>
+    </table>
+</body>
+</html>
