@@ -1,8 +1,11 @@
 package cn.ycm.quartz.config;
 
+import cn.ycm.quartz.controllers.IndexController;
+import cn.ycm.quartz.controllers.JobController;
 import org.quartz.Scheduler;
 import org.quartz.spi.JobFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -18,11 +21,24 @@ public class QuartzAutoConfiguration {
     @Autowired
     private JobFactory jobFactory;
 
-//    @Bean
-//    @ConditionalOnMissingBean
-//    public IndexController indexController() {
-//        return new IndexController();
-//    }
+    @Bean
+    @ConditionalOnMissingBean
+    public IndexController indexController() {
+        return new IndexController();
+    }
+
+
+    @Bean
+    @ConditionalOnMissingBean
+    public JobController jobController() {
+        return new JobController();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public cn.ycm.quartz.config.JobFactory jobFactory(){
+        return new cn.ycm.quartz.config.JobFactory();
+    }
 
     @Bean
     public SchedulerFactoryBean schedulerFactoryBean() {

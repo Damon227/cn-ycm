@@ -3,19 +3,17 @@ package cn.ycm.quartz.controllers;
 import cn.ycm.quartz.service.jobs.DemoJob;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDateTime;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author YUANCHENGMAN
  * @date 2020-11-17
  */
-@RestController
-@RequestMapping("/job")
+@Controller
 public class JobController {
 
     @Autowired
@@ -33,5 +31,11 @@ public class JobController {
             scheduler.scheduleJob(jobDetail, trigger);
             scheduler.start();
         }
+    }
+
+    @GetMapping("/jobList")
+    public String jobList(HttpServletRequest request, @RequestParam String name) {
+        request.setAttribute("name", name);
+        return "jobList";
     }
 }
