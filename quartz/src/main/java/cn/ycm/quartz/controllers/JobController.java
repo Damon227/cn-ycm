@@ -1,16 +1,21 @@
 package cn.ycm.quartz.controllers;
 
-import cn.ycm.quartz.entity.QrtzCronTriggers;
+import cn.ycm.quartz.advice.BizException;
+import cn.ycm.quartz.pojo.vo.AddJobRequest;
+import cn.ycm.quartz.pojo.vo.QrtzTriggerEx;
 import cn.ycm.quartz.service.QrtzCronTriggerService;
+import cn.ycm.quartz.service.QrtzTriggerService;
 import cn.ycm.quartz.service.jobs.DemoJob;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * @author YUANCHENGMAN
@@ -24,6 +29,14 @@ public class JobController {
 
     @Autowired
     private QrtzCronTriggerService qrtzCronTriggerService;
+
+    @Autowired
+    private QrtzTriggerService qrtzTriggerService;
+
+    @GetMapping("/quartz")
+    public String quartz(){
+        return "index";
+    }
 
     @GetMapping("/createJob")
     public void createJob(@RequestParam String jobName) throws SchedulerException {
@@ -48,8 +61,19 @@ public class JobController {
 
     @GetMapping("/trigger/list")
     public String triggerList(HttpServletRequest request){
-        List<QrtzCronTriggers> cronTriggers = qrtzCronTriggerService.listTriggers();
-        request.setAttribute("cronTriggers", cronTriggers);
+        IPage<QrtzTriggerEx> triggerExPage = qrtzTriggerService.getPageExTriggers(0, 10);
+        request.setAttribute("triggerExPage", triggerExPage);
         return "triggerList";
+    }
+
+    @GetMapping("/job/add")
+    public String addJob(HttpServletRequest request){
+        return "addJob";
+    }
+
+    @PostMapping("/api/job/add")
+    @ResponseBody
+    public boolean addJob(AddJobRequest request) throws SchedulerException, BizException {
+        return qrtzTriggerService.addJob(request);
     }
 }
