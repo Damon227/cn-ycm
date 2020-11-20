@@ -1,10 +1,14 @@
 package cn.ycm.quartz.pojo.vo;
 
+
+import javax.validation.constraints.NotNull;
+
 /**
  * @author YUANCHENGMAN
  * @date 2020-11-19
  */
 public class AddJobRequest {
+    @NotNull
     private String jobGroup;
     private String jobName;
     private String jobClassName;

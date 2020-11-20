@@ -2,6 +2,7 @@ package cn.ycm.quartz.mapper;
 
 import cn.ycm.quartz.entity.QrtzCronTriggers;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springframework.stereotype.Component;
 
 /**
  * <p>

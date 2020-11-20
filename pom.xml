@@ -56,13 +56,11 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-quartz</artifactId>
-                <type>pom</type>
                 <version>2.3.5.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
-                <type>pom</type>
                 <version>8.0.22</version>
             </dependency>
             <dependency>

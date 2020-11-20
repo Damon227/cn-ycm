@@ -10,10 +10,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,7 +33,7 @@ public class JobController {
     private QrtzTriggerService qrtzTriggerService;
 
     @GetMapping("/quartz")
-    public String quartz(){
+    public String quartz() {
         return "index";
     }
 
@@ -60,20 +59,20 @@ public class JobController {
     }
 
     @GetMapping("/trigger/list")
-    public String triggerList(HttpServletRequest request){
+    public String triggerList(HttpServletRequest request) {
         IPage<QrtzTriggerEx> triggerExPage = qrtzTriggerService.getPageExTriggers(0, 10);
         request.setAttribute("triggerExPage", triggerExPage);
         return "triggerList";
     }
 
     @GetMapping("/job/add")
-    public String addJob(HttpServletRequest request){
+    public String addJob(HttpServletRequest request) {
         return "addJob";
     }
 
     @PostMapping("/api/job/add")
     @ResponseBody
-    public boolean addJob(AddJobRequest request) throws SchedulerException, BizException {
+    public boolean addJob(@RequestBody @Validated AddJobRequest request, BindingResult result) throws SchedulerException, BizException {
         return qrtzTriggerService.addJob(request);
     }
 }
