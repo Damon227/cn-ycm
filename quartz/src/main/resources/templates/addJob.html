@@ -18,41 +18,47 @@
                         <div class="card-header"><h4>添加任务</h4></div>
                         <div class="card-body">
 
-                            <form class="form-horizontal" id="addJob" onsubmit="return false;">
+                            <form class="form-horizontal" id="addJobForm" onsubmit="return false;">
                                 <div class="form-group">
                                     <label class="col-md-3 control-label" for="jobGroup">任务分组</label>
                                     <div class="col-md-7">
-                                        <input class="form-control" type="text" id="jobGroup" name="jobGroup" placeholder="请输入任务组..">
+                                        <input class="form-control" type="text" id="jobGroup" name="jobGroup"
+                                               placeholder="请输入任务组..">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-3 control-label" for="jobName">任务名称</label>
                                     <div class="col-md-7">
-                                        <input class="form-control" type="text" id="jobName" name="jobName" placeholder="请输入任务名称..">
+                                        <input class="form-control" type="text" id="jobName" name="jobName"
+                                               placeholder="请输入任务名称..">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-3 control-label" for="jobClassName">任务执行名称</label>
                                     <div class="col-md-7">
-                                        <input class="form-control" type="text" id="jobClassName" name="jobClassName" placeholder="请输入任务执行名称..">
+                                        <input class="form-control" type="text" id="jobClassName" name="jobClassName"
+                                               placeholder="请输入任务执行名称..">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-3 control-label" for="triggerGroup">触发器分组</label>
                                     <div class="col-md-7">
-                                        <input class="form-control" type="text" id="triggerGroup" name="triggerGroup" placeholder="请输入触发器分组..">
+                                        <input class="form-control" type="text" id="triggerGroup" name="triggerGroup"
+                                               placeholder="请输入触发器分组..">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-3 control-label" for="triggerName">触发器名称</label>
                                     <div class="col-md-7">
-                                        <input class="form-control" type="text" id="triggerName" name="triggerName" placeholder="请输入触发器名称..">
+                                        <input class="form-control" type="text" id="triggerName" name="triggerName"
+                                               placeholder="请输入触发器名称..">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-3 control-label" for="cronExpression">Cron表达式</label>
                                     <div class="col-md-7">
-                                        <input class="form-control" type="text" id="cronExpression" name="cronExpression" placeholder="请输入触发器名称..">
+                                        <input class="form-control" type="text" id="cronExpression"
+                                               name="cronExpression" placeholder="请输入触发器名称..">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -69,25 +75,91 @@
         </div>
     </main>
 
-    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery-3.5.1.min.js}"></script>
     <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
     <script type="text/javascript" th:src="@{/js/perfect-scrollbar.min.js}"></script>
     <script type="text/javascript" th:src="@{/js/main.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap-notify.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lightyear.js}"></script>
     <script type="text/javascript">
         $(function () {
-            $('#addJobSubmit').click(function(){
-                let data = $('#addJob').serializeArray();
-                $.ajax({
-                    url:"/api/job/add",
-                    type:"post",
-                    data:data,
-                    success:function (res) {
-                        console.log(res);
+            $('#addJobSubmit').click(function () {
+                $('#addJobForm').validate({
+                    debug: true, //调试模式取消submit的默认提交
+                    focusInvalid: true, //校验不通过时焦点到第一个错误输入框
+                    onkeyup: false,
+                    errorClass: "invalid",
+                    submitHandler: function () {
+                        lightyear.loading('show');
+                        let data = $('#addJobForm').serializeArray();
+
+                        $.ajax({
+                            url: "/api/job/add",
+                            type: "post",
+                            data: data,
+                            success: function (res) {
+                                if (res.bizCode == 0) {
+                                    window.location.href='add.html'
+                                } else {
+                                    lightyear.loading('hide');
+                                    lightyear.notify(res.msg, 'danger');
+                                }
+                            },
+                            error: function (res) {
+                                lightyear.loading('hide');
+                                lightyear.notify('系统异常，请稍候再试', 'error');
+                            }
+                        })
                     },
-                    error:function (res) {
-                        console.log(res);
+                    rules: {
+                        jobGroup: {
+                            required: true,
+                            rangelength: [1, 50]
+                        },
+                        jobName: {
+                            required: true,
+                            rangelength: [1, 50]
+                        },
+                        jobClassName: {
+                            required: true
+                        },
+                        triggerGroup: {
+                            required: true,
+                            rangelength: [1, 50]
+                        },
+                        triggerName: {
+                            required: true,
+                            rangelength: [1, 50]
+                        },
+                        cronExpression: {
+                            required: true
+                        }
+                    },
+                    messages: {
+                        jobGroup: {
+                            required: "请输入任务分组",
+                            rangelength: "任务分组长度应在1到50个字符"
+                        },
+                        jobName: {
+                            required: "请输入任务名称",
+                            rangelength: "任务名称长度应在1到50个字符"
+                        },
+                        jobClassName: {
+                            required: "请输入任务执行名称"
+                        },
+                        triggerGroup: {
+                            required: "请输入触发器分组",
+                            rangelength: "触发器分组长度应在1到50个字符"
+                        },
+                        triggerName: {
+                            required: "请输入触发器名称",
+                            rangelength: "触发器名称长度应在1到50个字符"
+                        },
+                        cronExpression: {
+                            required: "请输入Cron表达式"
+                        }
                     }
-                })
+                });
             });
         });
     </script>

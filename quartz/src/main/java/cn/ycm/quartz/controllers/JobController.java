@@ -72,7 +72,12 @@ public class JobController {
 
     @PostMapping("/api/job/add")
     @ResponseBody
-    public boolean addJob(@RequestBody @Validated AddJobRequest request, BindingResult result) throws SchedulerException, BizException {
+    public boolean addJob(@Validated AddJobRequest request) throws SchedulerException, BizException {
         return qrtzTriggerService.addJob(request);
+    }
+
+    @GetMapping("/demo")
+    public String demo(HttpServletRequest request){
+        return "demo";
     }
 }
