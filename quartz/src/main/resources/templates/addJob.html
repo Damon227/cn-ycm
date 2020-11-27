@@ -98,8 +98,11 @@
                             type: "post",
                             data: data,
                             success: function (res) {
-                                if (res.bizCode == 0) {
-                                    window.location.href='add.html'
+                                if (res.bizCode == 1) {
+                                    lightyear.notify('添加成功', 'success');
+                                    setTimeout(function () {
+                                        window.location.href = '/trigger/list'
+                                    }, 1000);
                                 } else {
                                     lightyear.loading('hide');
                                     lightyear.notify(res.msg, 'danger');

@@ -64,6 +64,9 @@ public class QrtzTriggerService {
 
     public boolean addJob(AddJobRequest request) throws SchedulerException, BizException {
         JobDetail jobDetail = JobBuilder.newJob(DemoJob.class).withIdentity(request.getJobName(), request.getJobGroup()).build();
+        if (scheduler.checkExists(jobDetail.getKey())) {
+            throw new BizException(0, "任务名称重复");
+        }
 
         CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(request.getCronExpression());
         TriggerKey triggerKey = TriggerKey.triggerKey(request.getTriggerName(), request.getTriggerGroup());
@@ -72,10 +75,7 @@ public class QrtzTriggerService {
             Trigger trigger = TriggerBuilder.newTrigger().withIdentity(request.getTriggerName(), request.getTriggerGroup()).withSchedule(cronScheduleBuilder).build();
             scheduler.scheduleJob(jobDetail, trigger);
         } else {
-            if (scheduler.checkExists(jobDetail.getKey())) {
-                throw new BizException(0, "任务已存在");
-            }
-            scheduler.scheduleJob(jobDetail, cronTrigger);
+            throw new BizException(0, "触发器名称重复");
         }
 
         return true;
